@@ -1,8 +1,8 @@
 FROM python:alpine3.19
 
-WORKDIR /app
+WORKDIR /calculator
 
-COPY . /app
+COPY . /calculator
 
 RUN pip install flask
 
