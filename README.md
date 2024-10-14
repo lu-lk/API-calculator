@@ -36,7 +36,8 @@ CMD ["python3", "api-calculator.py"]
 ## Создание пайплайна для обновления версии калькулятора и встраивание инструментов безопасности  
 
 В качестве системы контроля версий был выбран Gitlab, так как он чаще используется для безопасной разработки.  
-Установка проводится с помощью docker-compose, его инструкции позволяют запускать несколько контейнеров. Файл docker-compose.yml был взят с https://docs.gitlab.com/ee/install/docker/installation.html.  
+  
+Установка проводится с помощью docker-compose, его инструкции позволяют запускать несколько контейнеров. Файл docker-compose.yml был взят с https://docs.gitlab.com/ee/install/docker/installation.html    
 ```  
 version: '3.6'
 services:
