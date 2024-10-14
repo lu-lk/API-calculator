@@ -35,6 +35,39 @@ CMD ["python3", "api-calculator.py"]
 
 ## Создание пайплайна для обновления версии калькулятора и встраивание инструментов безопасности  
 
+В качестве системы контроля версий был выбран Gitlab, так как он чаще используется для безопасной разработки.  
+Установка проводится с помощью docker-compose, его инструкции позволяют запускать несколько контейнеров. Файл docker-compose.yml был взят с https://docs.gitlab.com/ee/install/docker/installation.html.  
+```  
+version: '3.6'
+services:
+  gitlab:
+    # Укажем последнюю версию gitlab community edition
+    image: gitlab/gitlab-ce:17.4.2-ce.0
+    container_name: gitlab
+    restart: always
+    hostname: 'gitlab.for.calculator'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # url для доступа к гитлабу
+        external_url 'https://gitlab.for.calculator'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '22:22'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+    shm_size: '256m'
+    networks:
+      - gitlab_net
+
+networks:
+  gitlab_net:
+    driver: bridge
+```
+Сеть нужно указать, чтобы в дальнейшем поместить в нее Gitlab и Gitlab-runner.
+
 
 
 
