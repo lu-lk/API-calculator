@@ -20,5 +20,6 @@ RUN pip install flask
 # Запуск самого калькулятора  
 CMD ["python3", "api-calculator.py"]
 ```
-В качестве базового образа для нашего образа был выбран python, который установлен на alpine. Он весит меньше по сравнению с дебианом и не содержит уязвимостей.
-![image](https://github.com/user-attachments/assets/502ffc6b-f0b0-458b-96eb-a36f1085d44a)
+В качестве базового образа для нашего образа был выбран python, который установлен на alpine. Он весит меньше по сравнению с дебианом и не содержит уязвимостей (Скрин с dockerhub)
+![image](https://github.com/user-attachments/assets/80950483-ae75-4827-beb5-ccae3784a78f)
+
