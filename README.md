@@ -23,9 +23,17 @@ CMD ["python3", "api-calculator.py"]
 ```
 В качестве базового образа для нашего образа был выбран python, который установлен на alpine. Он весит меньше по сравнению с дебианом и не содержит уязвимостей (Скрин с dockerhub)
 ![image](https://github.com/user-attachments/assets/80950483-ae75-4827-beb5-ccae3784a78f)  
+  
+Размещаем файл калькулятора и Dockerfile в одной директории и собираем образ из этой директории:  
+![image](https://github.com/user-attachments/assets/6bf622d7-c0b0-4a5e-81e7-7f8486de2944)  
 
-Размещаем файл калькулятора и Dockerfile в одной директории. Далее собираем образ:  
-![image](https://github.com/user-attachments/assets/abf915b5-8fe2-4d2a-bc84-bf5dce2c73f5)
+Запускаем контейнер на порту 5555 и проверим, что он запустился:  
+![image](https://github.com/user-attachments/assets/c5682304-187d-4ab3-92cd-f02a7ac50b2f)
+  
+Чтобы проверить функциональность и доступность контейнера отправим ему запросы через curl. Видим, что вернулись ответы:  
+![image](https://github.com/user-attachments/assets/7b348a80-449e-48cf-b452-54300dbe1dad)
+
+
 
 
 
