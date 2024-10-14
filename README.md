@@ -9,10 +9,10 @@
 FROM python:alpine3.19
 
 # Рабочая директория, где будут выполняться дальнейшие инструкции  
-WORKDIR /app 
+WORKDIR /calculator
 
 # Копирование файлов калькулятора в рабочую директорию  
-COPY . /app
+COPY . /calculator
 
 # Установка Flask для работы калькулятора  
 RUN pip install flask
