@@ -67,8 +67,8 @@ networks:
   gitlab_net:
     driver: bridge
 ```
-Сеть нужно указать, чтобы в дальнейшем поместить в нее Gitlab и Gitlab-runner. Перед запуском нужно поместить переменную для пути gitlab:  
-export GITLAB_HOME=/srv/gitlab
+Сеть нужно указать, чтобы в дальнейшем поместить в нее Gitlab и Gitlab-runner.  
+Перед запуском нужно поместить переменную для пути gitlab: *export GITLAB_HOME=/srv/gitlab*
 
 
 
