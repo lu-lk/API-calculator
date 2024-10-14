@@ -73,6 +73,10 @@ networks:
 Запускаем контейнер:  
 ![image](https://github.com/user-attachments/assets/ebea6c9e-b49d-4858-8b40-2fa9e701978b)  
 
+Чтобы авторизоваться в gitlab, нужно знать пароль от root. Заходим в контейнер:  
+![image](https://github.com/user-attachments/assets/b45c206e-08dd-4c90-ba5b-aa289110fc61)
+
+
 
 
 
