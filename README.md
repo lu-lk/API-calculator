@@ -117,7 +117,7 @@ networks:
   gitlab_net:
     driver: bridge
 ```
-
+*export GITLAB_RUNNER_HOME=/srv/gitlab-runner*  
 
 
 
