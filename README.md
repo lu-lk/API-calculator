@@ -126,6 +126,7 @@ glrt-jEzz9h_BzSsvXc4eA5FX
   
 ![image](https://github.com/user-attachments/assets/2d0e75a9-4017-440a-8754-7ee81064719a)
 
+В файле конфигурации раннера config.toml выставляем privileged = true; добавляем /var/run/docker.sock:/var/run/docker.sock в volume. Это нужно для работы Docker-in-Docker.
 
 
 
