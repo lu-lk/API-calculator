@@ -1,0 +1,64 @@
+stages:
+  - semgrep
+  - build
+  - trivy
+  - deploy
+
+scan_with_semgrep:
+  stage: semgrep
+  image: returntocorp/semgrep:latest # Статическое сканирование кода
+  script:
+    - semgrep --config auto --json --output scanning-with-semgrep.json $CI_PROJECT_DIR
+  artifacts:
+    paths:
+      - scanning-with-semgrep.json
+
+build_calculator:
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind # Docker-in-Docker для сборки и управления образом
+  script:
+    - docker build -t api-calculator:v1 .
+    - docker save api-calculator:v1 > api-calculator-v1.tar
+  artifacts:
+    paths:
+      - api-calculator-v1.tar
+
+scan_with_trivy:
+  stage: trivy
+  image: docker:latest
+  services:
+    - name: docker:dind
+  script:
+    - docker load -i api-calculator-v1.tar
+    # Сканирование инфраструктуры образа
+    - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $CI_PROJECT_DIR:/cache
+      aquasec/trivy:latest image --format json --output /cache/scanning-with-trivy.json api-calculator:v1
+  artifacts:
+    paths:
+      - scanning-with-trivy.json
+
+deploy_container:
+  stage: deploy
+  image: docker:latest
+  services:
+    - name: docker:dind
+  script:
+    - docker load -i api-calculator-v1.tar
+    - docker run --rm -d -p 5555:5555 api-calculator:v1
+    - apk update && apk upgrade && apk add curl
+    - sleep 10
+    - docker ps
+    - container_id=$(docker ps -q --filter ancestor=api-calculator:v1)
+    # Получение IP-адреса контейнера
+    - container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $container_id)
+    # Логи контейнера для диагностики
+    - docker logs $container_id
+    # Выполнение curl запросов через IP-адрес контейнера
+    - echo "Container IP $container_ip"
+    - curl "http://$container_ip:5555/multiply?a=10&b=2.5"
+    - curl "http://localhost:5555/multiply?a=10&b=2.5"
+    - curl "http://docker:5555/multiply?a=10&b=2.5"
+    - curl "http://localhost:5555/add?a=0.8323&b=312313"
+    - curl "http://localhost:5555/"
