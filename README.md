@@ -135,7 +135,66 @@ networks:
 ![image](https://github.com/user-attachments/assets/13a2c91f-be32-4f50-8995-3eb1cc75f91f)  
 
 **Пайплайн .gitlab-ci.yml**  
+```  
+stages:
+  - semgrep
+  - build
+  - trivy
+  - deploy
 
+scan_with_semgrep:
+  stage: semgrep
+  image: returntocorp/semgrep:latest
+  script:
+    # Статическое сканирование директории проекта
+    - semgrep --config auto --json --output scanning-with-semgrep.json $CI_PROJECT_DIR
+    # Сборка останавливается если обнаружена CRITICAL уязвимость
+    - |
+      if grep -q '"confidence": "CRITICAL"' scanning-with-semgrep.json; then
+        echo "CRITICAL уязвимости найдены!"
+        exit 1
+      else
+        echo "CRITICAL уязвимости не обнаружены."
+      fi
+  artifacts:
+   paths:
+      - scanning-with-semgrep.json # Сохранение отчета в артефакты для дальнейшего анализа
+
+build_calculator:
+  stage: build
+  image: docker:latest
+  services:
+    - name: docker:dind # Docker-in-Docker для сборки и управления образом
+  script:
+    - docker build -t $HARBOR_URL/$IMAGE_NAME_TAG . # Сборка образа пуша в регистри
+    - docker login $HARBOR_URL -u $HARBOR_LOGIN -p $HARBOR_PASSWORD # Авторизация в Harbor регистри
+    - docker push $HARBOR_URL/$IMAGE_NAME_TAG # Пуш образа
+
+scan_with_trivy:
+  stage: trivy
+  image: 
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  script:
+    # Сканирование инфраструктуры образа через trivy. Если будет найдена CRITICAL уязвимость, то пайплайн остановится
+    - trivy image --exit-code 1 --severity CRITICAL --format json --output scanning-with-trivy.json $HARBOR_URL/$IMAGE_NAME_TAG
+  artifacts:
+    paths:
+      - scanning-with-trivy.json
+
+deploy_container:
+  stage: deploy
+  image: docker:latest
+  services:
+    - name: $HARBOR_URL/$IMAGE_NAME_TAG
+      alias: api-calculator # alias для указания доменного имени в сети
+  before_script:
+    - apk add --no-cache curl
+  script:
+    - curl "http://api-calculator:5555/multiply?a=10.2313&b=0.22" # Отправка запросов для проверки работы калькулятора
+    - curl "http://api-calculator:5555/"
+    - curl "http://api-calculator:5555/divide?a=999&b=0"
+```  
 Пайплайн состоит из 4 джоб:  
 Первая джоба сканирует код с помощью статического анализатора кода semgrep. Если будет найдена critical уязвимость, то пайплайн останавливается. Отчет сканирования сохраняется в артефакты.  
 Результат:  
@@ -148,7 +207,14 @@ networks:
 Третья джоба сканирует образ калькулятора с помощью trivy. Если будет найдена critical уязвимость, то пайплайн также останавливается. Отчет сканирования сохраняется в артефакты.  
   
 Последняя джоба отвечает за запуск контейнера с калькулятором и за отправку запросов для проверки его работоспособности.
-![image](https://github.com/user-attachments/assets/2cc452f0-063d-42ee-b934-3e0ae4483648)
+![image](https://github.com/user-attachments/assets/2cc452f0-063d-42ee-b934-3e0ae4483648)  
+
+Переменные хранятся в Settings -> CI/CD -> Variables:  
+![image](https://github.com/user-attachments/assets/06ffa5be-f01e-404d-b05c-9420bda18906)  
+
+## Анализ отчетов сканирования
+
+
 
 
 
