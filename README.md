@@ -212,7 +212,13 @@ deploy_container:
 Переменные хранятся в Settings -> CI/CD -> Variables:  
 ![image](https://github.com/user-attachments/assets/06ffa5be-f01e-404d-b05c-9420bda18906)  
 
-## Анализ отчетов сканирования
+## Анализ отчетов сканирования  
+
+**Trivy** показал, что уязвимостей не было найдено. Связано это с тем, что образ построен на относительно новом alpine. В отчете указаны метаданные об образе: дата создания, хеши слоев, ОС, история слоев.  
+![image](https://github.com/user-attachments/assets/5fe25e26-5849-43ce-9fc3-ed650a384cc8)
+
+
+
 
 
 
