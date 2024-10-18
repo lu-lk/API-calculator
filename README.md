@@ -56,9 +56,9 @@ services:
       - '443:443'
       - '22:22'
     volumes:
-      - '$GITLAB_HOME/config:/etc/gitlab'
-      - '$GITLAB_HOME/logs:/var/log/gitlab'
-      - '$GITLAB_HOME/data:/var/opt/gitlab'
+      - '/srv/gitlab/config:/etc/gitlab'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
     shm_size: '256m'
     networks:
       - gitlab_net
@@ -68,7 +68,6 @@ networks:
     driver: bridge
 ```
 Сеть нужно указать, чтобы в дальнейшем поместить в нее Gitlab и Gitlab-runner.  
-Перед запуском нужно поместить переменную для пути gitlab: *export GITLAB_HOME=/srv/gitlab*  
   
 Запускаем контейнер:  
 ![image](https://github.com/user-attachments/assets/ebea6c9e-b49d-4858-8b40-2fa9e701978b)  
@@ -76,7 +75,8 @@ networks:
 Чтобы авторизоваться в gitlab, нужно знать пароль от root. Заходим в контейнер c gitlab и достаем пароль из файла:  
 ![image](https://github.com/user-attachments/assets/b45c206e-08dd-4c90-ba5b-aa289110fc61)  
 
-Следует подключиться к Gitlab через Web-интерфейс. Узнаем адрес машины, где развернут gitlab и зайдем на него по https через браузер. Авторизуемся и создаем проект.
+Следует подключиться к Gitlab через Web-интерфейс. Узнаем адрес машины, где развернут gitlab и зайдем на него по https через браузер. Авторизуемся и создаем проект. 
+Для выполнения задач пайплайна будет нужен gitlab-runner - добавим конфигурацию для его запуска в docker-compose.yml:
 
 ```
 version: '3.6'
@@ -108,7 +108,7 @@ services:
     depends_on:
       - gitlab
     volumes:
-      - '$GITLAB_RUNNER_HOME:/etc/gitlab-runner'
+      - '/srv/gitlab-runner:/etc/gitlab-runner'
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - gitlab_net
@@ -117,8 +117,11 @@ networks:
   gitlab_net:
     driver: bridge
 ```
-*export GITLAB_RUNNER_HOME=/srv/gitlab-runner*  
+  
+Запустим docker compose и проверим контейнеры:  
 ![image](https://github.com/user-attachments/assets/eef70594-6998-473e-9b3b-fbab3599bdae)  
+
+Получаем токен Gitlab-runner через интерфейс Gitlab. Заходим в контейнер с Gitlab-runner и регистрируем его для взаимодействия с Gitlab.
 ![image](https://github.com/user-attachments/assets/0a627fea-ae5f-45e0-bdb0-04088a10d61c)
 
 
