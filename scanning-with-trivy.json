@@ -1,0 +1,141 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2024-10-18T17:37:14.752940729Z",
+  "ArtifactName": "localhost:4433/my_registry/api-calculator:0.0.1",
+  "ArtifactType": "container_image",
+  "Metadata": {
+    "OS": {
+      "Family": "alpine",
+      "Name": "3.19.4"
+    },
+    "ImageID": "sha256:87b09fa41615f287b88614b64a9b99353dbe1b2337b79be12b33af223ab1b71c",
+    "DiffIDs": [
+      "sha256:94b0f5987cb71badf41e0e98ad0305e7ae36e2f5a4c92c26f6a7b42eb2303ba2",
+      "sha256:e3069b0697f6976b0ef078e6b723613aa9ade3e763c7a3c4195bfd7272ca75c5",
+      "sha256:bc1c2cc5ddb97dcad93a088fa144c515511988e343bcdf8990d1ecef5d22f228",
+      "sha256:0b1bc01f1171f3fdf30d4e312a01341245910b7b7657c02e3ed093a240bc94cd",
+      "sha256:cba78df40b76c8c31930716598cbf99fdb250ed449091443823eaae9a33bd6e2",
+      "sha256:b7038732ab9e58bcc276b99e3c1cdfdcbc27e896fdc179606919a82c925d84c9",
+      "sha256:3f2408bcf307d24a4e2f5e7be94f6b2cd0a18292f81cdbb4a4f6472881622cee"
+    ],
+    "RepoTags": [
+      "localhost:4433/my_registry/api-calculator:0.0.1"
+    ],
+    "RepoDigests": [
+      "localhost:4433/my_registry/api-calculator@sha256:35b982d662b68e423ae5f1d33ebf7477e8dee3c6eaa32807566acfa354124a35"
+    ],
+    "ImageConfig": {
+      "architecture": "amd64",
+      "created": "2024-10-18T22:36:44.397846896+05:00",
+      "history": [
+        {
+          "created": "2024-09-06T22:20:13Z",
+          "created_by": "/bin/sh -c #(nop) ADD file:9e193d6fff4bce11c0ee715ad87def9ef40e9608d4be84cf73391edd45b2810e in / "
+        },
+        {
+          "created": "2024-09-06T22:20:13Z",
+          "created_by": "/bin/sh -c #(nop)  CMD [\"/bin/sh\"]",
+          "empty_layer": true
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "ENV PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "RUN /bin/sh -c set -eux; \tapk add --no-cache \t\tca-certificates \t\ttzdata \t; # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "ENV GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "ENV PYTHON_VERSION=3.13.0",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "RUN /bin/sh -c set -eux; \t\tapk add --no-cache --virtual .build-deps \t\tgnupg \t\ttar \t\txz \t\t\t\tbluez-dev \t\tbzip2-dev \t\tdpkg-dev dpkg \t\texpat-dev \t\tfindutils \t\tgcc \t\tgdbm-dev \t\tlibc-dev \t\tlibffi-dev \t\tlibnsl-dev \t\tlibtirpc-dev \t\tlinux-headers \t\tmake \t\tncurses-dev \t\topenssl-dev \t\tpax-utils \t\treadline-dev \t\tsqlite-dev \t\ttcl-dev \t\ttk \t\ttk-dev \t\tutil-linux-dev \t\txz-dev \t\tzlib-dev \t; \t\twget -O python.tar.xz \"https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz\"; \twget -O python.tar.xz.asc \"https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc\"; \tGNUPGHOME=\"$(mktemp -d)\"; export GNUPGHOME; \tgpg --batch --keyserver hkps://keys.openpgp.org --recv-keys \"$GPG_KEY\"; \tgpg --batch --verify python.tar.xz.asc python.tar.xz; \tgpgconf --kill all; \trm -rf \"$GNUPGHOME\" python.tar.xz.asc; \tmkdir -p /usr/src/python; \ttar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \trm python.tar.xz; \t\tcd /usr/src/python; \tgnuArch=\"$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)\"; \t./configure \t\t--build=\"$gnuArch\" \t\t--enable-loadable-sqlite-extensions \t\t$(test \"$gnuArch\" != 'riscv64-linux-musl' \u0026\u0026 echo '--enable-optimizations') \t\t--enable-option-checking=fatal \t\t--enable-shared \t\t--with-lto \t\t--with-system-expat \t\t--with-ensurepip \t; \tnproc=\"$(nproc)\"; \tEXTRA_CFLAGS=\"-DTHREAD_STACK_SIZE=0x100000\"; \tLDFLAGS=\"${LDFLAGS:--Wl},--strip-all\"; \tmake -j \"$nproc\" \t\t\"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}\" \t\t\"LDFLAGS=${LDFLAGS:-}\" \t\t\"PROFILE_TASK=${PROFILE_TASK:-}\" \t; \trm python; \tmake -j \"$nproc\" \t\t\"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}\" \t\t\"LDFLAGS=${LDFLAGS:--Wl},-rpath='\\$\\$ORIGIN/../lib'\" \t\t\"PROFILE_TASK=${PROFILE_TASK:-}\" \t\tpython \t; \tmake install; \t\tcd /; \trm -rf /usr/src/python; \t\tfind /usr/local -depth \t\t\\( \t\t\t\\( -type d -a \\( -name test -o -name tests -o -name idle_test \\) \\) \t\t\t-o \\( -type f -a \\( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \\) \\) \t\t\\) -exec rm -rf '{}' + \t; \t\tfind /usr/local -type f -executable -not \\( -name '*tkinter*' \\) -exec scanelf --needed --nobanner --format '%n#p' '{}' ';' \t\t| tr ',' '\\n' \t\t| sort -u \t\t| awk 'system(\"[ -e /usr/local/lib/\" $1 \" ]\") == 0 { next } { print \"so:\" $1 }' \t\t| xargs -rt apk add --no-network --virtual .python-rundeps \t; \tapk del --no-network .build-deps; \t\texport PYTHONDONTWRITEBYTECODE=1; \tpython3 --version; \tpip3 --version # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "RUN /bin/sh -c set -eux; \tfor src in idle3 pip3 pydoc3 python3 python3-config; do \t\tdst=\"$(echo \"$src\" | tr -d 3)\"; \t\t[ -s \"/usr/local/bin/$src\" ]; \t\t[ ! -e \"/usr/local/bin/$dst\" ]; \t\tln -svT \"$src\" \"/usr/local/bin/$dst\"; \tdone # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2024-10-07T18:55:41Z",
+          "created_by": "CMD [\"python3\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        },
+        {
+          "created": "2024-10-15T17:42:28Z",
+          "created_by": "WORKDIR /calculator",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2024-10-18T17:36:35Z",
+          "created_by": "COPY . /calculator # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2024-10-18T17:36:44Z",
+          "created_by": "RUN /bin/sh -c pip install flask # buildkit",
+          "comment": "buildkit.dockerfile.v0"
+        },
+        {
+          "created": "2024-10-18T17:36:44Z",
+          "created_by": "CMD [\"python3\" \"api-calculator.py\"]",
+          "comment": "buildkit.dockerfile.v0",
+          "empty_layer": true
+        }
+      ],
+      "os": "linux",
+      "rootfs": {
+        "type": "layers",
+        "diff_ids": [
+          "sha256:94b0f5987cb71badf41e0e98ad0305e7ae36e2f5a4c92c26f6a7b42eb2303ba2",
+          "sha256:e3069b0697f6976b0ef078e6b723613aa9ade3e763c7a3c4195bfd7272ca75c5",
+          "sha256:bc1c2cc5ddb97dcad93a088fa144c515511988e343bcdf8990d1ecef5d22f228",
+          "sha256:0b1bc01f1171f3fdf30d4e312a01341245910b7b7657c02e3ed093a240bc94cd",
+          "sha256:cba78df40b76c8c31930716598cbf99fdb250ed449091443823eaae9a33bd6e2",
+          "sha256:b7038732ab9e58bcc276b99e3c1cdfdcbc27e896fdc179606919a82c925d84c9",
+          "sha256:3f2408bcf307d24a4e2f5e7be94f6b2cd0a18292f81cdbb4a4f6472881622cee"
+        ]
+      },
+      "config": {
+        "Cmd": [
+          "python3",
+          "api-calculator.py"
+        ],
+        "Env": [
+          "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+          "PYTHON_VERSION=3.13.0"
+        ],
+        "WorkingDir": "/calculator",
+        "ArgsEscaped": true
+      }
+    }
+  },
+  "Results": [
+    {
+      "Target": "localhost:4433/my_registry/api-calculator:0.0.1 (alpine 3.19.4)",
+      "Class": "os-pkgs",
+      "Type": "alpine"
+    },
+    {
+      "Target": "Python",
+      "Class": "lang-pkgs",
+      "Type": "python-pkg"
+    }
+  ]
+}
