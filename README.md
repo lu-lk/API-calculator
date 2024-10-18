@@ -214,8 +214,44 @@ deploy_container:
 
 ## Анализ отчетов сканирования  
 
+Первая уязвимость найденная **Semgrep** относится к Dockerfile и имеет уровень MEDIUM:  
+![image](https://github.com/user-attachments/assets/5bcf63ea-e452-4c2e-8269-4128512c49fc)  
+Чтобы устранить уязвимость, нужно создавать пользователя в образе, наделять его минимально-необходимыми правами и запускать контейнер от его имени.  
+
+Следующие MEDIUM уязвимости связаны с пользовательским вводом, которые напрямую передается в привидение типов для bool, что позволяет внедрить NaN.  
+![image](https://github.com/user-attachments/assets/2dda44d0-4007-4d32-85d8-f6255b6c32eb)  
+Решением является проверка пользовательского ввода.  
+Отрывок примера кода для устранения уязвимости:  
+```  
+def is_valid_number(value):
+    try:
+        num = float(value)
+        if math.isnan(num) or math.isinf(num):
+            return False
+        return True
+    except ValueError:
+        return False
+
+@app.route('/calculate')
+def calculate():
+    a = request.args.get('a')
+    b = request.args.get('b')
+
+    if not (is_valid_number(a) and is_valid_number(b)):
+        return jsonify({'error': 'Invalid input'}), 400
+
+    a = float(a)
+    b = float(b)
+```
+
+Следующая HIGH уязвимость связанная с использование app.run(host='0.0.0.0'), который указывается Flask-приложению слушать подключения на всех сетевых интерфейсах, что делает приложение доступным из внешней сети:  
+![image](https://github.com/user-attachments/assets/299f8d91-9a30-4774-9e44-6497f756b4a7)  
+Чтобы устранить уязвимость нужно указать app.run(port=5555), тогда сервер будет слушать только локальные подключения.  
+  
 **Trivy** показал, что уязвимостей не было найдено. Связано это с тем, что образ построен на относительно новом alpine. В отчете указаны метаданные об образе: дата создания, хеши слоев, ОС, история слоев.  
 ![image](https://github.com/user-attachments/assets/5fe25e26-5849-43ce-9fc3-ed650a384cc8)
+
+
 
 
 
