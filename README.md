@@ -125,12 +125,13 @@ networks:
 ![image](https://github.com/user-attachments/assets/2d0e75a9-4017-440a-8754-7ee81064719a)  
 В файле конфигурации раннера config.toml выставляем privileged = true; добавляем /var/run/docker.sock:/var/run/docker.sock в volume. Это нужно для работы Docker-in-Docker.  
 
-**Теперь Gitlab готов к работе!**
+**Теперь Gitlab готов к работе!**  
 
-
-
+Для работы с образами локально был развернут регистри Harbor. Его конфиг:  
 ![image](https://github.com/user-attachments/assets/d165bc12-9510-4c66-b704-549db5cd63ce)
 
+Авторизуемся и создаем проект, где в дальнейшем будут храниться образы:  
+![image](https://github.com/user-attachments/assets/13a2c91f-be32-4f50-8995-3eb1cc75f91f)
 
 
 
