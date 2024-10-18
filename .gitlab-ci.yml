@@ -6,12 +6,21 @@ stages:
 
 scan_with_semgrep:
   stage: semgrep
-  image: returntocorp/semgrep:latest # Статическое сканирование кода
+  image: returntocorp/semgrep:latest
   script:
+    # Статическое сканирование директории проекта
     - semgrep --config auto --json --output scanning-with-semgrep.json $CI_PROJECT_DIR
+    # Сборка останавливается если обнаружена CRITICAL уязвимость
+    - |
+      if grep -q '"confidence": "CRITICAL"' scanning-with-semgrep.json; then
+        echo "CRITICAL уязвимости найдены!"
+        exit 1
+      else
+        echo "CRITICAL уязвимости не обнаружены."
+      fi
   artifacts:
-    paths:
-      - scanning-with-semgrep.json
+   paths:
+      - scanning-with-semgrep.json # Сохранение отчета в артефакты для дальнейшего анализа
 
 build_calculator:
   stage: build
@@ -19,22 +28,18 @@ build_calculator:
   services:
     - name: docker:dind # Docker-in-Docker для сборки и управления образом
   script:
-    - docker build -t api-calculator:v1 .
-    - docker save api-calculator:v1 > api-calculator-v1.tar
-  artifacts:
-    paths:
-      - api-calculator-v1.tar
+    - docker build -t $HARBOR_URL/$IMAGE_NAME_TAG . # Сборка образа пуша в регистри
+    - docker login $HARBOR_URL -u $HARBOR_LOGIN -p $HARBOR_PASSWORD # Авторизация в Harbor регистри
+    - docker push $HARBOR_URL/$IMAGE_NAME_TAG # Пуш образа
 
 scan_with_trivy:
   stage: trivy
-  image: docker:latest
-  services:
-    - name: docker:dind
+  image: 
+    name: aquasec/trivy:latest
+    entrypoint: [""]
   script:
-    - docker load -i api-calculator-v1.tar
-    # Сканирование инфраструктуры образа
-    - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $CI_PROJECT_DIR:/cache
-      aquasec/trivy:latest image --format json --output /cache/scanning-with-trivy.json api-calculator:v1
+    # Сканирование инфраструктуры образа через trivy. Если будет найдена CRITICAL уязвимость, то пайплайн остановится
+    - trivy image --exit-code 1 --severity CRITICAL --format json --output scanning-with-trivy.json $HARBOR_URL/$IMAGE_NAME_TAG
   artifacts:
     paths:
       - scanning-with-trivy.json
@@ -43,22 +48,11 @@ deploy_container:
   stage: deploy
   image: docker:latest
   services:
-    - name: docker:dind
+    - name: $HARBOR_URL/$IMAGE_NAME_TAG
+      alias: api-calculator # alias для указания доменного имени в сети
+  before_script:
+    - apk add --no-cache curl
   script:
-    - docker load -i api-calculator-v1.tar
-    - docker run --rm -d -p 5555:5555 api-calculator:v1
-    - apk update && apk upgrade && apk add curl
-    - sleep 10
-    - docker ps
-    - container_id=$(docker ps -q --filter ancestor=api-calculator:v1)
-    # Получение IP-адреса контейнера
-    - container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $container_id)
-    # Логи контейнера для диагностики
-    - docker logs $container_id
-    # Выполнение curl запросов через IP-адрес контейнера
-    - echo "Container IP $container_ip"
-    - curl "http://$container_ip:5555/multiply?a=10&b=2.5"
-    - curl "http://localhost:5555/multiply?a=10&b=2.5"
-    - curl "http://docker:5555/multiply?a=10&b=2.5"
-    - curl "http://localhost:5555/add?a=0.8323&b=312313"
-    - curl "http://localhost:5555/"
+    - curl "http://api-calculator:5555/multiply?a=10.2313&b=0.22" # Отправка запросов для проверки работы калькулятора
+    - curl "http://api-calculator:5555/"
+    - curl "http://api-calculator:5555/divide?a=999&b=0"
