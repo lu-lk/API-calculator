@@ -121,14 +121,10 @@ networks:
 Запустим docker compose и проверим контейнеры:  
 ![image](https://github.com/user-attachments/assets/eef70594-6998-473e-9b3b-fbab3599bdae)  
 
-Получаем токен Gitlab-runner через интерфейс Gitlab. Заходим в контейнер с Gitlab-runner и регистрируем его для взаимодействия с Gitlab.
-![image](https://github.com/user-attachments/assets/0a627fea-ae5f-45e0-bdb0-04088a10d61c)
+Получаем токен Gitlab-runner через интерфейс Gitlab. Заходим в контейнер с Gitlab-runner и регистрируем его для взаимодействия с Gitlab:   
+![image](https://github.com/user-attachments/assets/2d0e75a9-4017-440a-8754-7ee81064719a)  
+В файле конфигурации раннера config.toml выставляем privileged = true; добавляем /var/run/docker.sock:/var/run/docker.sock в volume. Это нужно для работы Docker-in-Docker.  
 
-
-  
-![image](https://github.com/user-attachments/assets/2d0e75a9-4017-440a-8754-7ee81064719a)
-
-В файле конфигурации раннера config.toml выставляем privileged = true; добавляем /var/run/docker.sock:/var/run/docker.sock в volume. Это нужно для работы Docker-in-Docker.
 
 ![image](https://github.com/user-attachments/assets/d165bc12-9510-4c66-b704-549db5cd63ce)
 
