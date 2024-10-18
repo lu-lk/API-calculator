@@ -35,6 +35,7 @@ CMD ["python3", "api-calculator.py"]
 
 ## Создание пайплайна для обновления версии калькулятора и встраивание инструментов безопасности  
 
+**Установка и настройка Gitlab**  
 В качестве платформы для сборки, сканирования и тестирования был выбран Gitlab CI/CD.  
   
 Установка проводится локально с помощью docker-compose, его инструкции позволяют запускать несколько контейнеров. Файл docker-compose.yml был взят с https://docs.gitlab.com/ee/install/docker/installation.html    
@@ -125,13 +126,31 @@ networks:
 ![image](https://github.com/user-attachments/assets/2d0e75a9-4017-440a-8754-7ee81064719a)  
 В файле конфигурации раннера config.toml выставляем privileged = true; добавляем /var/run/docker.sock:/var/run/docker.sock в volume. Это нужно для работы Docker-in-Docker.  
 
-**Теперь Gitlab готов к работе!**  
+**Установка и настройка Harbor регистри**  
 
 Для работы с образами локально был развернут регистри Harbor. Его конфиг:  
 ![image](https://github.com/user-attachments/assets/d165bc12-9510-4c66-b704-549db5cd63ce)
 
 Авторизуемся и создаем проект, где в дальнейшем будут храниться образы:  
-![image](https://github.com/user-attachments/assets/13a2c91f-be32-4f50-8995-3eb1cc75f91f)
+![image](https://github.com/user-attachments/assets/13a2c91f-be32-4f50-8995-3eb1cc75f91f)  
+
+**Пайплайн .gitlab-ci.yml**  
+
+Пайплайн состоит из 4 джоб:  
+Первая джоба сканирует код с помощью статического анализатора кода semgrep. Если будет найдена critical уязвимость, то пайплайн останавливается. Отчет сканирования сохраняется в артефакты.  
+Результат:  
+![image](https://github.com/user-attachments/assets/56ac602d-a4f4-4b02-ada7-5200b8591ca4)  
+  
+Вторая джоба собирает контейнер с помощью d-in-d и пушит его в локальный регистри.  
+Образ в регистри:  
+![image](https://github.com/user-attachments/assets/240b750b-08a7-47c9-9983-55b4d29cc4bf)  
+  
+Третья джоба сканирует образ калькулятора с помощью trivy. Если будет найдена critical уязвимость, то пайплайн также останавливается. Отчет сканирования сохраняется в артефакты.  
+  
+Последняя джоба отвечает за запуск контейнера с калькулятором и за отправку запросов для проверки его работоспособности.
+![image](https://github.com/user-attachments/assets/2cc452f0-063d-42ee-b934-3e0ae4483648)
+
+
 
 
 
