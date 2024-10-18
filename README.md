@@ -35,9 +35,9 @@ CMD ["python3", "api-calculator.py"]
 
 ## Создание пайплайна для обновления версии калькулятора и встраивание инструментов безопасности  
 
-В качестве системы контроля версий был выбран Gitlab, так как он чаще используется для безопасной разработки.  
+В качестве платформы для сборки, сканирования и тестирования был выбран Gitlab CI/CD.  
   
-Установка проводится с помощью docker-compose, его инструкции позволяют запускать несколько контейнеров. Файл docker-compose.yml был взят с https://docs.gitlab.com/ee/install/docker/installation.html    
+Установка проводится локально с помощью docker-compose, его инструкции позволяют запускать несколько контейнеров. Файл docker-compose.yml был взят с https://docs.gitlab.com/ee/install/docker/installation.html    
 ```  
 version: '3.6'
 services:
@@ -127,6 +127,7 @@ networks:
 
 В файле конфигурации раннера config.toml выставляем privileged = true; добавляем /var/run/docker.sock:/var/run/docker.sock в volume. Это нужно для работы Docker-in-Docker.
 
+![image](https://github.com/user-attachments/assets/d165bc12-9510-4c66-b704-549db5cd63ce)
 
 
 
